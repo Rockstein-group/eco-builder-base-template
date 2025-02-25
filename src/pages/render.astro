@@ -1,0 +1,90 @@
+---
+// This is a special page that renders dynamic content
+// Access it via POST with source and props in the body
+
+import { writeFile, unlink } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+
+const COMPONENTS_DIR = fileURLToPath(new URL("../components", import.meta.url));
+
+interface Props {
+  source?: string;
+  props?: Record<string, unknown>;
+}
+
+// Get the POST data
+let source = "";
+let props = {};
+let tempFilePath: string | null = null;
+let DynamicComponent: any = null;
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.json();
+    source = data.source || "";
+    props = data.props || {};
+
+    if (!source) {
+      return new Response(
+        JSON.stringify({ error: "Source content is required" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Create a temporary component file
+    const timestamp = Date.now();
+    const filename = `DynamicComponent_${timestamp}.astro`;
+    tempFilePath = `${COMPONENTS_DIR}/${filename}`;
+
+    await writeFile(tempFilePath, source, "utf-8");
+
+    // Import the component
+    const mod = await import(`../components/${filename}?t=${timestamp}`);
+    DynamicComponent = mod.default;
+
+  } catch (error) {
+    if (tempFilePath) {
+      try {
+        await unlink(tempFilePath);
+      } catch (cleanupError) {
+        console.error("Error cleaning up:", cleanupError);
+      }
+    }
+    return new Response(
+      JSON.stringify({
+        error: "Internal Server Error",
+        message: error instanceof Error ? error.message : "Unknown error",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+} else {
+  // If not POST, return an error
+  return new Response(
+    JSON.stringify({ error: "Only POST method is supported" }),
+    {
+      status: 405,
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+}
+---
+{DynamicComponent && <DynamicComponent {...props} />}
+
+{/* Clean up the temporary file after rendering */}
+{tempFilePath && (
+  <script define:vars={{ tempFilePath }}>
+    // Clean up on client side after rendering
+    fetch('/api/cleanup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: tempFilePath })
+    }).catch(console.error);
+  </script>
+)}
