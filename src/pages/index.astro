@@ -3,46 +3,106 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-  <div class="max-w-md mx-auto mt-8 p-4 bg-white rounded shadow">
+  <div
+    class="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto mt-4 sm:mt-8 p-3 sm:p-4 bg-white rounded shadow"
+  >
     <!-- Test Case 1: Basic list items -->
-    <ul class="space-y-2">
-      <li class="p-3 bg-gray-100 rounded transition-colors duration-200">
+    <h3 class="font-bold mb-2">Draggable Items:</h3>
+    <ul
+      class="space-y-1 sm:space-y-2 md:space-y-0 md:grid md:grid-cols-2 md:gap-3 lg:grid-cols-4"
+    >
+      <li class="p-2 sm:p-3 bg-gray-100 rounded transition-colors duration-200">
         Item 1 - Drag me
       </li>
-      <li class="p-3 bg-gray-100 rounded transition-colors duration-200">
+      <li class="p-2 sm:p-3 bg-gray-100 rounded transition-colors duration-200">
         Item 2 - Drag me too
       </li>
-      <li class="p-3 bg-gray-100 rounded transition-colors duration-200">
+      <li class="p-2 sm:p-3 bg-gray-100 rounded transition-colors duration-200">
         Item 3 - Also drasggable
       </li>
-      <li class="p-3 bg-gray-100 rounded transition-colors duration-200">
+      <li class="p-2 sm:p-3 bg-gray-100 rounded transition-colors duration-200">
         Item 4 - Try moving me
       </li>
     </ul>
 
     <!-- Test Case 2: Nested draggable elements -->
-    <div class="mt-8 p-4 bg-gray-50 rounded">
+    <div class="mt-6 sm:mt-8 p-3 sm:p-4 bg-gray-50 rounded">
       <h3 class="font-bold mb-2">Nested Items:</h3>
-      <div class="p-3 bg-gray-100 rounded transition-colors duration-200">
-        Parent Item (draggable)
-        <div
-          class="mt-2 ml-4 p-2 bg-blue-100 rounded transition-colors duration-200"
-          data-not-movable="true"
-        >
-          Child Item 1 (not draggable)
-        </div>
-        <div
-          class="mt-2 ml-4 p-2 bg-blue-100 rounded transition-colors duration-200"
-          data-not-movable="true"
-        >
-          Child Item 2 (not draggable)
+      <div
+        class="p-2 sm:p-3 bg-gray-100 rounded transition-colors duration-200"
+      >
+        <p>Parent Item (draggable)</p>
+        <div class="md:flex md:space-x-4 md:mt-3">
+          <div
+            class="mt-2 md:mt-0 ml-3 sm:ml-4 md:ml-0 p-2 bg-blue-100 rounded transition-colors duration-200 md:flex-1"
+            data-not-movable="true"
+          >
+            Child Item 1 (not draggable)
+          </div>
+          <div
+            class="mt-2 md:mt-0 ml-3 sm:ml-4 md:ml-0 p-2 bg-blue-100 rounded transition-colors duration-200 md:flex-1"
+            data-not-movable="true"
+          >
+            Child Item 2 (not draggable)
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Test Case 3: Elements with rich content -->
-    <div class="mt-8">
-      <div class="p-4 bg-gray-100 rounded transition-colors duration-200">
+    <div class="mt-6 sm:mt-8">
+      <div
+        class="p-3 sm:p-4 bg-gray-100 rounded transition-colors duration-200 md:flex md:items-start md:space-x-4"
+      >
+        <div class="md:flex-1">
+          <h4 class="font-bold">Complex Item (entire div is draggable)</h4>
+          <p class="mt-2">With multiple elements including:</p>
+          <ul class="list-disc ml-4 mt-1">
+            <li>Images</li>
+            <li>Lists</li>
+            <li>Text content</li>
+          </ul>
+        </div>
+        <div class="mt-2 md:mt-0 md:flex-shrink-0">
+          <img
+            src="https://picsum.photos/50"
+            alt="Test"
+            class="rounded md:w-24 md:h-24"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Final test cases, in columns on larger screens -->
+    <div class="mt-6 sm:mt-8 md:grid md:grid-cols-2 md:gap-4">
+      <!-- Test Case 4: Disabled state -->
+      <div>
+        <h4 class="font-bold mb-2">Disabled Item:</h4>
+        <div
+          class="p-2 sm:p-3 bg-gray-100 rounded opacity-50"
+          data-not-movable="true"
+        >
+          This item should not be draggable
+        </div>
+      </div>
+
+      <!-- Test Case 5: Non movable container with movable children -->
+      <div data-not-movable="true">
+        <h4 class="font-bold mb-2 mt-4 md:mt-0">Non-movable Container:</h4>
+        Not movable container
+        <div
+          class="p-2 sm:p-3 bg-gray-100 rounded transition-colors duration-200 mt-2"
+        >
+          Movable child
+        </div>
+      </div>
+    </div>
+
+    <!-- Test Case 3: Elements with rich content -->
+    <div class="mt-6 sm:mt-8">
+      <div
+        class="p-3 sm:p-4 bg-gray-100 rounded transition-colors duration-200"
+      >
         <h4 class="font-bold">Complex Item (entire div is draggable)</h4>
         <p class="mt-2">With multiple elements including:</p>
         <ul class="list-disc ml-4 mt-1">
@@ -55,16 +115,21 @@ import Layout from "../layouts/Layout.astro";
     </div>
 
     <!-- Test Case 4: Disabled state -->
-    <div class="mt-8">
-      <div class="p-3 bg-gray-100 rounded opacity-50" data-not-movable="true">
+    <div class="mt-6 sm:mt-8">
+      <div
+        class="p-2 sm:p-3 bg-gray-100 rounded opacity-50"
+        data-not-movable="true"
+      >
         This item should not be draggable
       </div>
     </div>
 
     <!-- Test Case 5: Non movable container with movable children -->
-    <div class="mt-8" data-not-movable="true">
+    <div class="mt-6 sm:mt-8" data-not-movable="true">
       Not movable container
-      <div class="p-3 bg-gray-100 rounded transition-colors duration-200">
+      <div
+        class="p-2 sm:p-3 bg-gray-100 rounded transition-colors duration-200"
+      >
         Movable child
       </div>
     </div>
